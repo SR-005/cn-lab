@@ -5,7 +5,7 @@
 
 int main()
 {
-    int serversocket,clientsocket;      //server only socket, server+client socket
+    int serversocket,cssocket;      //server only socket, server+client socket
     struct sockaddr_in server,client;   //to store server and client address
     char string[20];                    //to store string
 
@@ -22,10 +22,10 @@ int main()
     int addresslength=sizeof(client);          
 
     //accept incoming client connection and create new socket
-    clientsocket=accept(serversocket,(struct sockaddr *)&client,(socklen_t*)&addresslength); 
+    cssocket=accept(serversocket,(struct sockaddr *)&client,(socklen_t*)&addresslength); 
 
     //recieve string from server
-    recv(clientsocket,string,sizeof(string),0);
+    recv(cssocket,string,sizeof(string),0);
     int i,j,temp;
     int length=strlen(string);
 
@@ -37,7 +37,7 @@ int main()
     }
 
     //sends the reversed string to server
-    send(clientsocket,string,sizeof(string),0);
+    send(cssocket,string,sizeof(string),0);
     close(serversocket);
 
     return 0;
