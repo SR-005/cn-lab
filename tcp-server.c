@@ -5,27 +5,40 @@
 
 int main()
 {
-    int sock;
-    struct sockaddr_in server;        //for storing server address details
-    char string[20];                    //array for storing string
+    int serversocket,clientsocket;      //server only socket, server+client socket
+    struct sockaddr_in server,client;   //to store server and client address
+    char string[20];                    //to store string
 
-    sock=socket(AF_INET,SOCK_STREAM,0);
-    server.sin_family=AF_INET;                      //specifies IPv4
-    server.sin_port=htons(8086);                    //server port number = 8086: htons converts port num to network byte order
-    server.sin_addr.s_addr=inet_addr("127.0.0.1");  //sets localhost "127.0.0.1"
-    
-    connect(sock,(struct sockaddr *)&server, sizeof(server));   //connecting to a server
+    serversocket=socket(AF_INET,SOCK_STREAM,0);     //create server socket
 
-    //prompt the string
-    printf("Enter a string: ");
-    scanf("%s",string);
+    server.sin_family=AF_INET;                  //specifies IPv4
+    server.sin_port=htons(8086);                //server port number = 8086: htons converts port num to network byte order
+    server.sin_addr.s_addr=INADDR_ANY;          //accepts connection from any IPv4 Addresses
 
-    send(sock,string,strlen(string),0);         //send the string to client
-    recv(sock,string,strlen(string),0);         //recieve the reversed string from client
+    bind(serversocket,(struct sockaddr *)&server,sizeof(server));       //bind sockets with IP Address and Port
+    listen(serversocket,3);                     //server waits for client connection, 3 -> max no. of queued connection
+    printf("Server waiting for connection...\n");
 
-    printf("Reversed String: %s",string);   
-    close(sock);                //close the socket
+    int addresslength=sizeof(client);          
 
+    //accept incoming client connection and create new socket
+    clientsocket=accept(serversocket,(struct sockaddr *)&client,(socklen_t*)&addresslength); 
+
+    //recieve string from server
+    recv(clientsocket,string,sizeof(string),0);
+    int i,j,temp;
+    int length=strlen(string);
+
+    for(i=0,j=length-1; i<j; i++,j--)
+    {
+        temp=string[i];
+        string[i]=string[j];
+        string[j]=temp;
+    }
+
+    //sends the reversed string to server
+    send(clientsocket,string,sizeof(string),0);
+    close(serversocket);
 
     return 0;
 }
