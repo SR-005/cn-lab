@@ -1,51 +1,40 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
 
-int main() {
-
+int main()
+{
     int sock;
-    struct sockaddr_in server, client;
+    struct sockaddr_in server,client;
     socklen_t len;
 
-    int a[2][2], b[2][2], result[2][2];
+    int a[2][2],b[2][2],c[2][2];
 
-    // Create UDP socket
-    sock = socket(AF_INET, SOCK_DGRAM, 0);
+    sock=socket(AF_INET,SOCK_DGRAM,0);      //socket creation
+    server.sin_family=AF_INET;
+    server.sin_port=htons(8086)
+    server.sin_addr.s_addr=INADDR_ANY;
 
-    // Server configuration
-    server.sin_family = AF_INET;
-    server.sin_port = htons(8090);
-    server.sin_addr.s_addr = INADDR_ANY;
+    bind(sock,(struct sockaddr *)&server, sizeof(server));
+    length=sizeof(client);
 
-    // Bind socket to port
-    bind(sock, (struct sockaddr*)&server, sizeof(server));
+    recvfrom(sock,a,sizeof(a),(struct sockaddr *)&client, &length);
+    recvfrom(sock,b,sizeof(b),(struct sockaddr *)&client, &length);
 
-    len = sizeof(client);
-
-    // Receive first matrix
-    recvfrom(sock, a, sizeof(a), 0, (struct sockaddr*)&client, &len);
-
-    // Receive second matrix
-    recvfrom(sock, b, sizeof(b), 0, (struct sockaddr*)&client, &len);
-
-    // Matrix addition
-    printf("Matrix Addition Result (Server Side):\n");
-
-    for(int i=0;i<2;i++){
-        for(int j=0;j<2;j++){
-            result[i][j] = a[i][j] + b[i][j];
-            printf("%d ", result[i][j]);
+    int i,j;
+    for(i=0;i<2;i++)
+    {
+        for(j=0;j<2;j++)
+        {
+            c[i][j]=a[i][j]+b[i][j];
+            print("%d",c[i][j]);
         }
-        printf("\n");
+        print("\n");
     }
 
-    // Send result back to client
-    sendto(sock, result, sizeof(result), 0, (struct sockaddr*)&client, len);
-
-    close(sock);
+    sendto(sock,c,sizeof(c),(struct sockaddr *)&client, length);
+    close(sock)
 
     return 0;
 }
