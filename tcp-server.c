@@ -22,7 +22,7 @@ int main()
     int addresslength=sizeof(client);          
 
     //accept incoming client connection and create new socket
-    cssocket=accept(serversocket,(struct sockaddr *)&client,(socklen_t*)&addresslength); 
+    cssocket=accept(serversocket,(struct sockaddr *)&client,&addresslength); 
 
     //recieve string from server
     recv(cssocket,string,sizeof(string),0);
