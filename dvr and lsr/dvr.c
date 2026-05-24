@@ -1,8 +1,5 @@
 #include<stdio.h>
 
-#define MAX 20
-#define INF 999
-
 struct Router
 {
     int distance[20];
