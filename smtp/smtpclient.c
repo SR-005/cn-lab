@@ -17,6 +17,7 @@ int main()
     connect(clientsocket, (struct sockaddr *)&server, sizeof(server));
 
     char helo[50],sender[50],recipient[50],body[50];
+    
     printf("Enter the Helo Packet: ");
     fgets(helo,20,stdin);
     send(clientsocket,helo,strlen(helo),0);
@@ -24,11 +25,9 @@ int main()
 
     printf("\nEnter the sender Packet: ");
     fgets(sender,20,stdin);
-    
 
     printf("\nEnter the recipient Packet: ");
     fgets(recipient,20,stdin);
-    
 
     printf("\nEnter the body Packet: ");
     fgets(body,20,stdin);
