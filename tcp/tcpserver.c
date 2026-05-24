@@ -16,8 +16,8 @@ int main()
 
     bind(serversocket, (struct sockaddr *)&server, sizeof(server));
     listen(serversocket,3);
-    int addresslenght=sizeof(client);
-    scsocket=accept(serversocket, (struct sockaddr *)&client, (socklen_t *)&addresslenght);
+    socklen_t addresslength = sizeof(client);
+    scsocket=accept(serversocket, (struct sockaddr *)&client, &addresslenght);
 
     //program starts from here
     char string[20];
