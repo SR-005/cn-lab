@@ -15,25 +15,26 @@ int main()
     server.sin_addr.s_addr=inet_addr("127.0.0.1");
 
     connect(clientsocket, (struct sockaddr *)&server, sizeof(server));
-
-    int i, n, r;
+    int size=5,i;
     char buffer[1024];
-
-    printf("Enter Total Number of Frames to Send: ");
-    scanf("%d",&n);
-
-    for(i=0;i<n;i++)
+    for(i=0;i<size;i++)
     {
-        snprintf(buffer,sizeof(buffer), "%d", i);
+        sprintf(buffer,"%d",i);
         send(clientsocket,buffer,strlen(buffer),0);
-
-        //wait for Ack
-        memset(buffer,0,sizeof(buffer));
-        r=read(clientsocket,buffer,sizeof(buffer));
-        if(r>0)
-            printf("Client got the thing: %s\n",buffer);
+        usleep(100000);
     }
 
-    close(serversocket);
-    close(scsocket);
+    int frame;
+    char type[10];
+    memset(buffer,0,sizeof(buffer));
+    read(clientsocket,buffer,sizeof(buffer));
+
+    sscanf(buffer, "%s %d", type, &frame);
+    if(strcmp(type,"NAK")==0)
+    {
+        printf("Got request for resending Frame %d\n",frame);
+        sprintf(buffer,"%d",frame);
+        send(clientsocket,buffer,strlen(buffer),0);
+    }
+    close(clientsocket);
 }
